@@ -1,0 +1,767 @@
+private void ClickNUmber(int num) {
+        if (action == 0) {
+            op1 = op1 * 10 + num;
+            enter.setText(Integer.toString(op1));
+        } else {
+            op2 = op2 * 10 + num;
+            enter.setText(Integer.toString(op2));
+        }
+    }
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.d0 :
+                ClickNUmber(0);
+                break;
+            case R.id.d1 :
+                ClickNUmber(1);
+                break;
+            case R.id.d2 :
+                ClickNUmber(2);
+                break;
+            case R.id.d3 :
+                ClickNUmber(3);
+                break;
+            case R.id.d4 :
+                ClickNUmber(4);
+                break;
+            case R.id.d5 :
+                ClickNUmber(5);
+                break;
+            case R.id.d6 :
+                ClickNUmber(6);
+                break;
+            case R.id.d7 :
+                ClickNUmber(7);
+                break;
+            case R.id.d8 :
+                ClickNUmber(8);
+                break;
+            case R.id.d9 :
+                ClickNUmber(9);
+                break;
+
+            case R.id.add :
+                action = 1;
+                break;
+
+            case R.id.sub :
+                action = 2;
+                break;
+
+            case R.id.mul :
+                action = 3;
+                break;
+
+            case R.id.div :
+                action = 4;
+                break;
+
+            case R.id.eqv :
+                switch(action) {
+                    case 1 :
+                        result = op1 + op2;
+                        break;
+
+                    case 2 :
+                        result = op1 - op2;
+                        break;
+
+                    case 3 :
+                        result = op1 * op2;
+                        break;
+
+                    case 4 :
+                        result = op1 / op2;
+                        break;
+                }
+                if (action != 0) {
+                    enter.setText(Integer.toString(result));
+                    op1 = op2 = 0;
+                    result = 0;
+                    action = 0;
+                }
+                break;
+            case R.id.clear :
+                op1 = op2 = 0;
+                result = 0;
+                action = 0;
+                enter.setText("");
+        }
+
+    }
+
+
+ /*for (int i = 0; i < 10; i++) {
+            numbers[i] = (Button) findViewById(buttonId[i]);
+            numbers[i].setOnClickListener(this);
+        }
+        for (int i = 0; i < 4; i++) {
+            operations[i] = (Button) findViewById(operationId[i]);
+            operations[i].setOnClickListener(this);
+        }*/
+
+
+
+
+
+package android_2016.ifmo.ru.calculator;
+
+import android.app.ActionBar;
+import android.renderscript.Double2;
+import android.support.annotation.IntegerRes;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class CalcActivity extends AppCompatActivity {
+
+    //Long op1 = 0L, op2 = 0L;
+    //Long result;
+    BigDecimal op1, op2, result;
+    String action;
+    private static int[] number_ids = new int[]{R.id.d0, R.id.d1, R.id.d2, R.id.d3, R.id.d4, R.id.d5, R.id.d6, R.id.d7, R.id.d8, R.id.d9};
+    private static int[] op_ids = new int[]{R.id.add, R.id.sub, R.id.mul, R.id.div};
+    private static Button[] numbers = new Button[10];
+    private static Button[] operations = new Button[4];
+    TextView enter;
+    Button clear, equals;
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_calc);
+
+        for (int i = 0; i < 10; i++) {
+            numbers[i] = (Button) findViewById(number_ids[i]);
+            numbers[i].setOnClickListener(onNumberClick);
+        }
+        for (int i = 0; i < 4; i++) {
+            operations[i] = (Button) findViewById(op_ids[i]);
+            operations[i].setOnClickListener(onBinaryOperationClick);
+        }
+        enter = (TextView) findViewById(R.id.enter);
+
+        clear = (Button) findViewById(R.id.clear);
+        clear.setOnClickListener(onClickClear);
+        equals = (Button) findViewById(R.id.eqv);
+        equals.setOnClickListener(onClickEquals);
+    }
+
+    private View.OnClickListener onNumberClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String number = ((Button) v).getText().toString();
+            op1 = 10 * op1 + Long.parseLong(number);
+            enter.append(number);
+        }
+    };
+
+    private View.OnClickListener onBinaryOperationClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            op2 = op1;
+            op1 = 0L;
+            action = ((Button) v).getText().toString();
+            enter.append(" " + action + " ");
+        }
+    };
+
+    private View.OnClickListener onClickClear = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            enter.setText("");
+            op1 = 0L;
+            op2 = 0L;
+        }
+    };
+
+    private View.OnClickListener onClickEquals = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (action) {
+                case "+" :
+                    result = op1 + op2;
+                    break;
+                case "-" :
+                    result = op2 - op1;
+                    break;
+                case "*" :
+                    result = op1 * op2;
+                    break;
+                case "/" :
+                    result = op2 / op1;
+                    break;
+            }
+            enter.setText(result.toString());
+            action = "";
+            op1 = 0L;
+            op2 = 0L;
+        }
+    };
+}
+
+
+
+
+
+LAYOUT
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation = "vertical"
+    android:weightSum="8">
+
+    <TextView
+        android:id = "@+id/enter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#696969"
+        android:textSize="40dp"
+        android:textColor="#F5FFFA"
+        android:gravity="center"
+        android:layout_alignParentLeft = "true"
+        android:layout_alignParentStart = "true"
+        android:layout_weight="4" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/d7"
+        android:text="7" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/d8"
+        android:text="8" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/d9"
+        android:text="9" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/div"
+        android:text="/" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/clear"
+        android:text="C" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/d4"
+        android:text="4" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/d5"
+        android:text="5" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/d6"
+        android:text="6" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/sub"
+        android:text="-" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/d1"
+        android:text="1" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/d2"
+        android:text="2" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/d3"
+        android:text="3" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/mul"
+        android:text="*" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/d0"
+        android:text="0" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/clear"
+        android:text="C" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:id="@+id/eqv"
+        android:text="=" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>
+
+
+
+
+
+
+20/10/2016
+package android_2016.ifmo.ru.calculator;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+
+public class CalcActivity extends AppCompatActivity {
+
+    Double op1 = 0.0;
+    Double op2 = 0.0;
+    Double currRes = 0.0;
+    String action = "";
+    boolean lastEquals = false;
+    String number = "";
+    boolean p = false;
+    TextView enter, result;
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_calc);
+        enter = (TextView) findViewById(R.id.enter);
+        result = (TextView) findViewById(R.id.result);
+        clearText();
+    }
+
+    public void onNumberClick(View v) {
+        if (lastEquals) {
+            clearText();
+        }
+        String s = ((Button) v).getText().toString();
+        if (s.equals("00") && number.isEmpty()) {
+            number += "0";
+            enter.append("0");
+            return;
+        }
+        if ((s.equals("0") || s.equals("00")) && !number.isEmpty() && Double.parseDouble(number) == 0.0 && !p) return;
+        if (!number.isEmpty() && Double.parseDouble(number) == 0.0 && !p) cutOneSymbol();
+        number += s;
+        enter.append(s);
+        if (!action.isEmpty()) {
+            calc();
+        }
+    }
+
+    public void checkPoint(View v) {
+        if (!p) {
+            if (lastEquals) {
+                clearText();
+            }
+            String s = ((Button) v).getText().toString();
+            number += s;
+            enter.append(s);
+            p = true;
+            if (!action.isEmpty()) {
+                calc();
+            }
+        }
+    }
+
+    public void onBinaryOperationClick(View v) {
+        if (!number.isEmpty() && action.isEmpty()) {
+            if(number.equals(".")) op1 = 0.0;
+            else op1 = Double.parseDouble(number);
+            number = "";
+            p = false;
+        } else if (!number.isEmpty() && !action.isEmpty()) {
+            p = false;
+            calc();
+            number = "";
+            op1 = currRes;
+            enter.setText(print(op1));
+        } else if (!action.isEmpty()) {
+            cutOneSymbol();
+        }
+        action = ((Button) v).getText().toString();
+        enter.append(action);
+    }
+
+    public void onClickClear(View v) {
+        clearText();
+    }
+
+    public void onClickDel(View v) {
+        if (enter.getText().toString().isEmpty()) return;
+        cutOneSymbol();
+        if (number.isEmpty() && !action.isEmpty()) {
+            action = "";
+            number = print(op1);
+            op1 = 0.0;
+        } else if(number.isEmpty() && action.isEmpty()) {
+            number = print(op1);
+            number = number.substring(0, number.length() - 1);
+            op1 = 0.0;
+        } else if (!number.isEmpty() && !action.isEmpty()) {
+            number = number.substring(0, number.length() - 1);
+            calc();
+        } else if (!number.isEmpty() && action.isEmpty()){
+            number = number.substring(0, number.length() - 1);
+            if (number.isEmpty()) clearText();
+        }
+    }
+
+    public void onClickEquals(View v) {
+        if (lastEquals || number.isEmpty()) {
+            enter.setText(print(op1));
+
+        } else if (!number.isEmpty() && action.isEmpty()) {
+            enter.setText(number);
+            result.setText(number);
+        } else {
+            enter.append(number);
+            if (op2 == 0.0 && action.equals("/")) {
+                calc();
+                enter.setText("Error");
+                lastEquals = true;
+                return;
+            }
+            op1 = currRes;
+            enter.setText(print(op1));
+            number = "";
+            action = "";
+            p = false;
+        }
+        lastEquals = true;
+    }
+
+    private void clearText() {
+        enter.setText("");
+        result.setText("");
+        op1 = 0.0;
+        op2 = 0.0;
+        currRes = 0.0;
+        action = "";
+        lastEquals = false;
+        number = "";
+        p = false;
+    }
+
+    private void calc() {
+        if(number.equals(".")) op2 = 0.0;
+        else op2 = (!number.isEmpty()) ? Double.parseDouble(number) : 0.0;
+        if (op2 == 0.0 && action.equals("/")) {
+            result.setText("Error");
+            return;
+        }
+        switch (action) {
+            case "+":
+                currRes = op1 + op2;
+                break;
+            case "-":
+                currRes = op1 - op2;
+                break;
+            case "*":
+                currRes = op1 * op2;
+                break;
+            case "/":
+                currRes = op1 / op2;
+                break;
+        }
+        result.setText(print(currRes));
+    }
+
+    private String print(double num) {
+        if (((long) num) == num) {
+            return "" + ((long) num);
+        } else {
+            return "" + num;
+        }
+    }
+
+    private void cutOneSymbol() {
+        if (enter.getText().charAt(enter.getText().length() - 1) =='.') {
+            p = false;
+        }
+        enter.setText(enter.getText().subSequence(0, enter.getText().length() - 1));
+    }
+    
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("enter_value", enter.getText().toString());
+        outState.putString("result_value", result.getText().toString());
+        outState.putBoolean("p", p);
+        outState.putDouble("op1", op1);
+        outState.putDouble("op2", op2);
+        outState.putDouble("currRes", currRes);
+        outState.putString("action", action);
+        outState.putBoolean("lastEquals", lastEquals);
+        outState.putString("number", number);
+    }
+
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        enter.setText(savedInstanceState.getString("enter_value"));
+        result.setText(savedInstanceState.getString("result_value"));
+        p = savedInstanceState.getBoolean("p");
+        op1 = savedInstanceState.getDouble("op1");
+        op2 = savedInstanceState.getDouble("op2");
+        currRes = savedInstanceState.getDouble("currRes");
+        action = savedInstanceState.getString("action");
+        lastEquals = savedInstanceState.getBoolean("lastEquals");
+        number = savedInstanceState.getString("number");
+    }
+}
+
+
+
+
+
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation = "vertical"
+    android:weightSum="2">
+
+    <TextView
+        android:id = "@+id/enter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#696969"
+        android:textSize="50sp"
+        android:textColor="#F5FFFA"
+        android:gravity="end"
+        android:layout_alignParentLeft = "true"
+        android:layout_alignParentStart = "true"
+        android:layout_weight="0.5"
+        android:scrollHorizontally="true"/>
+
+    <TextView
+        android:id = "@+id/result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#696969"
+        android:textSize="60sp"
+        android:textColor="#F5FFFA"
+        android:gravity="end"
+        android:layout_alignParentLeft = "true"
+        android:layout_alignParentStart = "true"
+        android:layout_weight="0.5"
+        android:scrollHorizontally="true"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:weightSum="5">
+
+        <TableLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:weightSum="4">
+            <TableRow
+                android:id="@+id/r1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <Button
+                    style="@style/NumButtonStyle"
+                    android:id="@+id/d7"
+                    android:text="7"
+                    android:onClick="onNumberClick"/>
+
+                <Button
+                    style="@style/NumButtonStyle"
+                    android:id="@+id/d8"
+                    android:text="8"
+                    android:onClick="onNumberClick"/>
+
+                <Button
+                    style="@style/NumButtonStyle"
+                    android:id="@+id/d9"
+                    android:text="9"
+                    android:onClick="onNumberClick"/>
+
+                <Button
+                    style="@style/OpButtonStyle"
+                    android:id="@+id/div"
+                    android:shadowColor="#D3D3D3"
+                    android:text="/"
+                    android:onClick="onBinaryOperationClick"/>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/r2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+                <Button
+                    style="@style/NumButtonStyle"
+                    android:id="@+id/d4"
+                    android:text="4"
+                    android:onClick="onNumberClick"/>
+
+                <Button
+                    style="@style/NumButtonStyle"
+                    android:id="@+id/d5"
+                    android:text="5"
+                    android:onClick="onNumberClick"/>
+
+                <Button
+                    style="@style/NumButtonStyle"
+                    android:id="@+id/d6"
+                    android:text="6"
+                    android:onClick="onNumberClick"/>
+
+                <Button
+                    style="@style/OpButtonStyle"
+                    android:id="@+id/mul"
+                    android:text="*"
+                    android:onClick="onBinaryOperationClick"/>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/r3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+                <Button
+                    style="@style/NumButtonStyle"
+                    android:id="@+id/d1"
+                    android:text="1"
+                    android:onClick="onNumberClick"/>
+
+                <Button
+                    style="@style/NumButtonStyle"
+                    android:id="@+id/d2"
+                    android:text="2"
+                    android:onClick="onNumberClick"/>
+
+                <Button
+                    style="@style/NumButtonStyle"
+                    android:id="@+id/d3"
+                    android:text="3"
+                    android:onClick="onNumberClick"/>
+
+                <Button
+                    style="@style/OpButtonStyle"
+                    android:id="@+id/sub"
+                    android:text="-"
+                    android:onClick="onBinaryOperationClick"/>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/r4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+                <Button
+                    style="@style/NumButtonStyle"
+                    android:id="@+id/d0"
+                    android:text="0"
+                    android:onClick="onNumberClick"/>
+
+                <Button
+                    style="@style/NumButtonStyle"
+                    android:id="@+id/d00"
+                    android:text="00"
+                    android:onClick="onNumberClick"/>
+
+                <Button
+                    style="@style/NumButtonStyle"
+                    android:id="@+id/point"
+                    android:text="."
+                    android:onClick="checkPoint"/>
+
+                <Button
+                    style="@style/OpButtonStyle"
+                    android:id="@+id/add"
+                    android:text="+"
+                    android:onClick="onBinaryOperationClick"/>
+            </TableRow>
+
+        </TableLayout>
+        <TableLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:weightSum="4" >
+            <Button
+                style="@style/OpButtonStyle"
+                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:id="@+id/clear"
+                android:text="C"
+                android:layout_weight="1"
+                android:onClick="onClickClear"/>
+
+            <Button
+                style="@style/OpButtonStyle"
+                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:id="@+id/del"
+                android:text="DEL"
+                android:layout_weight="1"
+                android:onClick="onClickDel"/>
+
+            <Button
+                style="@style/EqvButtonStyle"
+                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:id="@+id/eqv"
+                android:text="="
+                android:layout_weight="2"
+                android:onClick="onClickEquals"/>
+        </TableLayout>
+    </LinearLayout>
+</LinearLayout>
+
+
